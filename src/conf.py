@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Laser-D Programming Language'
+project = 'Laser-D Language'
 copyright = '2020, Dibyendu Majumdar, D Language Foundation'
 author = 'Dibyendu Majumdar, D Language Foundation'
 
@@ -28,6 +28,7 @@ author = 'Dibyendu Majumdar, D Language Foundation'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.githubpages'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
