@@ -361,9 +361,9 @@ variable, function, or other declaration of that name in an enclosing scope.
 
 ::
 
-    StructType    = "struct" identifier [ "{" { MemberDecl ";" } "}" ] .
-    MemberDecl    = DataMember | Constructor | Destructor | .
-
+    StructType    = "struct" identifier [ "{" { MemberDecl } "}" ] .
+    MemberDecl    = DataMember | Constructor | Destructor | Method | StaticMethod .
+    
 
 
 
