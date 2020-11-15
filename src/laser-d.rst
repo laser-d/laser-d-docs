@@ -353,9 +353,7 @@ Laser-D's built-in comparison operators compare strings as a sequence of Unicode
 
 Struct types
 ------------
-A struct is a type. Its name becomes a type name within its scope.
-
-A struct declaration introduces the struct name into the scope where it is declared and hides any struct, 
+A struct declaration introduces the struct name as a type into the scope where it is declared and hides any struct, 
 variable, function, or other declaration of that name in an enclosing scope.
 
 
@@ -374,8 +372,42 @@ variable, function, or other declaration of that name in an enclosing scope.
 The data members of a struct are allocated so that later members have higher addresses within a struct object. 
 Implementation alignment requirements might cause two adjacent members not to be allocated immediately after each other.
 
+Initialization
+++++++++++++++
+A variable of struct type is by default initialized to the values specified as the initializer for each data member, or if no such
+value was specified, then to the default initial value of the data member type.
+
+::
+
+    struct S { int a = 4; int b; }
+    S x; // x.a is set to 4, x.b to 0
+
+Constructors
+++++++++++++
+A constructor is defined with a function name of ``this`` and must have no return value. At least one parameter must be specified.
+A struct constructor can be invoked by the name of the struct followed by its parameters.
+
+::
+    
+    struct S
+    {
+        int x, y = 4, z = 6;
+        this(int a, int b)
+        {
+            x = a;
+            y = b;
+        }
+    }
+
+    extern (C) void main()
+    {
+        S a = S(4, 5); // calls S.this(4, 5):  a.x = 4, a.y = 5, a.z = 6
+        S b = S();  // default initialized:    b.x = 0, b.y = 4, b.z = 6
+        S c = S(1); // error, matching this(int) not found
+    }
 
 
+    
 Union types
 -----------
 
