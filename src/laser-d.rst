@@ -371,6 +371,8 @@ variable, function, or other declaration of that name in an enclosing scope.
     ParameterList = Parameter { "," Parameter } .
     Parameter     = ParameterAttributes Type identifier .
 
+The data members of a struct are allocated so that later members have higher addresses within a struct object. 
+Implementation alignment requirements might cause two adjacent members not to be allocated immediately after each other.
 
 
 
