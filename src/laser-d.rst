@@ -17,6 +17,32 @@ Here is a hello world program in Laser-D.
     }
 
 
+Notation
+========
+The syntax is specified using Extended Backus-Naur Form (EBNF)::
+
+    Production  = production_name "=" [ Expression ] "." .
+    Expression  = Alternative { "|" Alternative } .
+    Alternative = Term { Term } .
+    Term        = production_name | token [ "…" token ] | Group | Option | Repetition .
+    Group       = "(" Expression ")" .
+    Option      = "[" Expression "]" .
+    Repetition  = "{" Expression "}" .
+
+Productions are expressions constructed from terms and the following operators, in increasing precedence::
+
+    |   alternation
+    ()  grouping
+    []  option (0 or 1 times)
+    {}  repetition (0 to n times)
+
+Lower-case production names are used to identify lexical tokens. Non-terminals are in CamelCase. Lexical tokens are enclosed in
+double quotes ``""``.
+
+The form ``a … b`` represents the set of characters from ``a`` through ``b`` as alternatives. The horizontal
+ellipsis ``…`` is also used elsewhere in the spec to informally denote various enumerations or code snippets that are not further specified. 
+
+
 Basic Concepts
 ==============
 
@@ -51,22 +77,10 @@ The following terms are used to denote specific Unicode character classes:
 ``universal-character-name``
     as defined in ISO/IEC 9899:1999(E) Appendix D of the C99 Standard
 
-``nondigit``
+::
 
-    one of::
-    
-        a b c d e f g h i j k l m n o p q r s t u v w x y z
-        A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-        _
-
-    universal-character-name
-
-``digit``
-    one of::
-
-        0 1 2 3 4 5 6 7 8 9
-
-The underscore character ``_`` (U+005F) is considered a letter.
+    nondigit = "A" … "Z" | "a" … "z" | "_" | universal-character-name .
+    digit    = "0" … "9" .
 
 
 Lexical Elements
@@ -120,6 +134,11 @@ Operators and Punctuation
 
 Identifiers
 -----------
+
+::
+
+    identifier = nondigit { nondigit | digit } .
+
 
 An identifier is a sequence chracters with a ``nondigit`` character followed by ``nondigit`` or ``digit`` characters.  
 
@@ -175,22 +194,11 @@ and may be preceded only by comments and #line directives.
 
 ::
 
-    ModuleDeclaration:
-        module ModuleFullyQualifiedName ;
-
-    ModuleFullyQualifiedName:
-        ModuleName
-        Packages . ModuleName
-
-    ModuleName:
-        Identifier
-
-    Packages:
-        PackageName
-        Packages . PackageName
-
-    PackageName:
-        Identifier
+    ModuleDeclaration             = "module" ModuleFullyQualifiedName ";" .
+    ModuleFullyQualifiedName      = ModuleName | Packages "." ModuleName .
+    ModuleName                    = identifier .
+    Packages                      = PackageName | Packages "." PackageName .
+    PackageName                   = identifier .
 
 The fully qualified module name forms part of the qualified name of every entity declared in that module. Thus two entities with identical names in different
 modules can be disambiguated using the fully qualified names of the entities.
