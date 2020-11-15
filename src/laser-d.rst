@@ -282,8 +282,8 @@ Pointer types
 
 ::
 
-    PointerType = BaseType "*"
-    BaseType = Type
+    PointerType = BaseType "*" .
+    BaseType = Type .
 
 A pointer type denotes the set of all pointers to variables of a given type, called the base type of the pointer. 
 The value of an uninitialized pointer is ``null``. 
@@ -318,8 +318,8 @@ Slice Types
 
 ::
 
-    SliceType       = BaseType "[" "]" 
-    BaseType        = Type
+    SliceType       = BaseType "[" "]" .
+    BaseType        = Type .
 
 A slice is a descriptor for a contiguous segment of an underlying array and provides access to a numbered sequence of elements from that array. 
 A slice type denotes the set of all slices of arrays of its element type. The number of elements is called the length of the slice and is 
@@ -353,6 +353,18 @@ Laser-D's built-in comparison operators compare strings as a sequence of Unicode
 
 Struct types
 ------------
+A struct is a type. Its name becomes a type name within its scope.
+
+A struct declaration introduces the struct name into the scope where it is declared and hides any struct, 
+variable, function, or other declaration of that name in an enclosing scope.
+
+
+::
+
+    StructType    = "struct" identifier [ "{" { MemberDecl ";" } "}" ] .
+    MemberDecl    = DataMember | Constructor | Destructor | .
+
+
 
 
 Union types
