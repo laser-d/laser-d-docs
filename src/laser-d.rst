@@ -177,7 +177,7 @@ The same identifier can denote different entities at different points in the pro
 
 Scope
 -----
-For each different entity that an identifier designates, the identifier is visible (i.e., can be used) only within a region of program text 
+An identifier is visible (i.e., can be used) only within a region of program text 
 called its scope. There are following kinds of scopes: global, module, struct or union type, template type, function, block. 
 
 Different entities designated by the same identifier either have different scopes, or the identifiers must be in an overload set.
@@ -195,9 +195,8 @@ and may be preceded only by comments and #line directives.
 ::
 
     ModuleDeclaration             = "module" ModuleFullyQualifiedName ";" .
-    ModuleFullyQualifiedName      = ModuleName | Packages "." ModuleName .
+    ModuleFullyQualifiedName      = { PackageName "." } ModuleName .
     ModuleName                    = identifier .
-    Packages                      = PackageName | Packages "." PackageName .
     PackageName                   = identifier .
 
 The fully qualified module name forms part of the qualified name of every entity declared in that module. Thus two entities with identical names in different
