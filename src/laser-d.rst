@@ -363,7 +363,14 @@ variable, function, or other declaration of that name in an enclosing scope.
 
     StructType    = "struct" identifier [ "{" { MemberDecl } "}" ] .
     MemberDecl    = DataMember | Constructor | Destructor | Method | StaticMethod .
-    
+    DataMember    = Type identifier [ "=" Initializer ] ";" .
+    Constructor   = "this" "(" ParameterList ")" FunctionBody .
+    Destructor    = "~" "this" "(" ")" FunctionBody .
+    Method        = ReturnType identifier "(" [ ParameterList ] ")" FunctionBody .
+    StaticMethod  = "static" Method .
+    ParameterList = Parameter { "," Parameter } .
+    Parameter     = ParameterAttributes Type identifier .
+
 
 
 
