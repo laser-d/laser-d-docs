@@ -190,7 +190,7 @@ Each Laser-D source file represents a distinct module. Each module has a name, o
 The module name, if not declared explicitly using the ``module`` declaration, is derived from the source file name.  
 
 If present, the ``module`` declaration must be the first and only such declaration in the source file, 
-and may be preceded only by comments and #line directives.
+and may be preceded only by comments and ``#line`` directives.
 
 ::
 
@@ -210,11 +210,12 @@ A type determines a set of values together with operations and methods specific 
 ::
 
     Type         = BasicType | DerivedType | TemplateType .
-    BasicType    = "void" | "bool" | "byte" | "ubyte" | "short" | "ushort" | "int" | "uint" | "long" | "ulong" | 
-                   "cent" | "ucent" | "char" | "wchar" | "dchar" | "float" | "double" | "real" |
-                   "ifloat" | "idouble" | "ireal" | "cfloat" | "cdouble" | "creal" .
-    DerivedType  = ArrayType | StructType | PointerType | ReferenceType | FunctionType | UnionType | DelegateType | FunctionPointerType .
-
+    BasicType    = "void" | "bool" | "byte" | "ubyte" | "short" | "ushort" | 
+                   "int" | "uint" | "long" | "ulong" | "char" | "wchar" | 
+                   "dchar" | "float" | "double" | "real" | "ifloat" | 
+                   "idouble" | "ireal" | "cfloat" | "cdouble" | "creal" .
+    DerivedType  = ArrayType | StructType | PointerType | ReferenceType | FunctionType | 
+                   UnionType | DelegateType | FunctionPointerType .
 
 
 Void type
@@ -223,6 +224,7 @@ Void type
 ::
 
     Keyword     Default Initializer         Description
+    -------     -------------------         -----------
     void        -	                        no type
 
 Boolean types
@@ -231,6 +233,7 @@ Boolean types
 ::
 
     Keyword     Default Initializer         Description
+    -------     -------------------         -----------
     bool        false	                    boolean value
 
 The ``bool`` type is a byte-size type that can only hold the value ``true`` or ``false``.
@@ -244,6 +247,7 @@ Integral types
 ::
 
     Keyword     Default Initializer         Description
+    -------     -------------------         -----------
     byte        0                           signed 8 bits
     ubyte       0u                          unsigned 8 bits
     short       0                           signed 16 bits
@@ -265,9 +269,10 @@ Floating-point types
 ::
 
     Keyword     Default Initializer         Description
+    -------     -------------------         -----------
     float       float.nan                   32 bit floating point
     double      double.nan                  64 bit floating point
-    real        real.nan                    largest FP size implemented in hardwareImplementation Note: 80 bits for x86 CPUs or double size, whichever is larger
+    real        real.nan                    largest FP size implemented in hardware
 
     ifloat      float.nan*1.0i              imaginary float
     idouble     double.nan*1.0i             imaginary double
@@ -276,17 +281,6 @@ Floating-point types
     cdouble     double.nan+double.nan*1.0i  complex double
     creal       real.nan+real.nan*1.0i      complex real
 
-
-Pointer types
--------------
-
-::
-
-    PointerType = BaseType "*" .
-    BaseType = Type .
-
-A pointer type denotes the set of all pointers to variables of a given type, called the base type of the pointer. 
-The value of an uninitialized pointer is ``null``. 
 
 Enum types
 ----------
@@ -351,12 +345,23 @@ While a string literal has a ``0`` byte terminator, the string type does not.
 
 Laser-D's built-in comparison operators compare strings as a sequence of Unicode code-points. 
 
+Pointer types
+-------------
+
+::
+
+    PointerType = BaseType "*" | FunctionType | DelegateType .
+    BaseType = Type .
+
+A pointer type denotes the set of all pointers to variables of a given type, called the base type of the pointer. 
+The value of an uninitialized pointer is ``null``. 
+
 Function types
 --------------
 ::
 
     FunctionType         = FunctionSignature ";" .
-    FunctionSignature    = [ FunctionStorageClass ] ( Result | auto ) identifier "(" Parameters ")" .
+    FunctionSignature    = [ FunctionStorageClass ] ( Result | auto ) "function" "(" Parameters ")" .
     Result               = Type .
     Parameters           = [ ParameterList ] .
     ParameterList        = ParameterDecl { "," ParameterDecl } .
@@ -364,7 +369,7 @@ Function types
     ParameterAttribute   = "in" | "out" | "ref" | "return" | "scope" .
     FunctionStorageClass = "ref" .
 
-A function type is used to declare a name as a function, without defining the body of the function.
+A function type holds a pointer to a function. 
 
 Parameter Attributes
 ++++++++++++++++++++
@@ -382,25 +387,6 @@ Parameter Attributes
     A ``return`` parameter may be returned or copied to the first parameter, but otherwise does not escape from the function.
 
 The attributes ``in``, ``ref`` and ``out`` are mutually exclusive.
-
-FunctionPointer type
---------------------
-
-::
-
-    FunctionPointerType  = Result "function" "(" Parameters ")" .
-
-A function pointer type holds a pointer to a function. 
-
-DelegateType
-------------
-
-::
-
-    DelegateType  = Result "delegate" "(" Parameters ")" .
-
-The delegate type holds a pair of pointers: a context and a pointer to function. 
-
 
 Struct types
 ------------
@@ -455,10 +441,19 @@ A struct constructor can be invoked by the name of the struct followed by its pa
         S c = S(1); // error, matching this(int) not found
     }
 
+DelegateType
+------------
+
+::
+
+    DelegateType  = Result "delegate" "(" Parameters ")" .
+
+The delegate type a pointer to a struct method. It enacpsulates both a reference to the struct object and the method. 
 
     
 Union types
 -----------
+
 
 
 
