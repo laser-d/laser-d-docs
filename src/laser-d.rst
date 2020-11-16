@@ -149,8 +149,8 @@ Comments
 
 Comments serve as program documentation. There are two forms:
 
-* Line comments start with the character sequence // and stop at the end of the line.
-* General comments start with the character sequence /\* and stop with the first subsequent character sequence \*/.
+* Line comments start with the character sequence ``//`` and stop at the end of the line.
+* General comments start with the character sequence ``/*`` and stop with the first subsequent character sequence ``*/``.
 
 String Literals
 ---------------
