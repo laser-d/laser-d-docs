@@ -213,7 +213,7 @@ A type determines a set of values together with operations and methods specific 
     BasicType    = "void" | "bool" | "byte" | "ubyte" | "short" | "ushort" | "int" | "uint" | "long" | "ulong" | 
                    "cent" | "ucent" | "char" | "wchar" | "dchar" | "float" | "double" | "real" |
                    "ifloat" | "idouble" | "ireal" | "cfloat" | "cdouble" | "creal" .
-    DerivedType  = ArrayType | StructType | PointerType | ReferenceType | FunctionType | UnionType | DelegateType .
+    DerivedType  = ArrayType | StructType | PointerType | ReferenceType | FunctionType | UnionType | DelegateType | FunctionPointerType .
 
 
 
@@ -351,6 +351,57 @@ While a string literal has a ``0`` byte terminator, the string type does not.
 
 Laser-D's built-in comparison operators compare strings as a sequence of Unicode code-points. 
 
+Function types
+--------------
+::
+
+    FunctionType         = FunctionSignature ";" .
+    FunctionSignature    = [ FunctionStorageClass ] ( Result | auto ) identifier "(" Parameters ")" .
+    Result               = Type .
+    Parameters           = [ ParameterList ] .
+    ParameterList        = ParameterDecl { "," ParameterDecl } .
+    ParameterDecl        = [ { ParameterAttribute } ] Type identifier .
+    ParameterAttribute   = "in" | "out" | "ref" | "return" | "scope" .
+    FunctionStorageClass = "ref" .
+
+A function type is used to declare a name as a function, without defining the body of the function.
+
+Parameter Attributes
+++++++++++++++++++++
+
+``in``	
+    A parameter marked as ``in`` behaves as if has been passed by value. 
+``ref``	
+    A ``ref`` parameter is passed by reference.
+``out``	
+    An ``out`` parameter is passed by reference and initialized upon function entry with the default value of its type
+``scope``	
+    A ``scope`` parameter must not escape the function call (e.g. by being assigned to a global variable). Ignored for any parameter that is 
+    passed by value.
+``return``	
+    A ``return`` parameter may be returned or copied to the first parameter, but otherwise does not escape from the function.
+
+The attributes ``in``, ``ref`` and ``out`` are mutually exclusive.
+
+FunctionPointer type
+--------------------
+
+::
+
+    FunctionPointerType  = Result "function" "(" Parameters ")" .
+
+A function pointer type holds a pointer to a function. 
+
+DelegateType
+------------
+
+::
+
+    DelegateType  = Result "delegate" "(" Parameters ")" .
+
+The delegate type holds a pair of pointers: a context and a pointer to function. 
+
+
 Struct types
 ------------
 A struct declaration introduces the struct name as a type into the scope where it is declared and hides any struct, 
@@ -362,12 +413,10 @@ variable, function, or other declaration of that name in an enclosing scope.
     StructType    = "struct" identifier [ "{" { MemberDecl } "}" ] .
     MemberDecl    = DataMember | Constructor | Destructor | Method | StaticMethod .
     DataMember    = Type identifier [ "=" Initializer ] ";" .
-    Constructor   = "this" "(" ParameterList ")" FunctionBody .
+    Constructor   = "this" "(" Parameters ")" FunctionBody .
     Destructor    = "~" "this" "(" ")" FunctionBody .
-    Method        = ReturnType identifier "(" [ ParameterList ] ")" FunctionBody .
+    Method        = FunctionSignature FunctionBody .
     StaticMethod  = "static" Method .
-    ParameterList = Parameter { "," Parameter } .
-    Parameter     = ParameterAttributes Type identifier .
 
 The data members of a struct are allocated so that later members have higher addresses within a struct object. 
 Implementation alignment requirements might cause two adjacent members not to be allocated immediately after each other.
