@@ -361,13 +361,12 @@ Function types
 ::
 
     FunctionType         = FunctionSignature ";" .
-    FunctionSignature    = [ FunctionStorageClass ] ( Result | auto ) "function" "(" Parameters ")" .
+    FunctionSignature    = ( Result | auto ) "function" "(" Parameters ")" .
     Result               = Type .
     Parameters           = [ ParameterList ] .
     ParameterList        = ParameterDecl { "," ParameterDecl } .
     ParameterDecl        = [ { ParameterAttribute } ] Type identifier .
-    ParameterAttribute   = "in" | "out" | "ref" | "return" | "scope" .
-    FunctionStorageClass = "ref" .
+    ParameterAttribute   = "in" | "out" | "ref" .
 
 A function type holds a pointer to a function. 
 
@@ -380,11 +379,6 @@ Parameter Attributes
     A ``ref`` parameter is passed by reference.
 ``out``	
     An ``out`` parameter is passed by reference and initialized upon function entry with the default value of its type
-``scope``	
-    A ``scope`` parameter must not escape the function call (e.g. by being assigned to a global variable). Ignored for any parameter that is 
-    passed by value.
-``return``	
-    A ``return`` parameter may be returned or copied to the first parameter, but otherwise does not escape from the function.
 
 The attributes ``in``, ``ref`` and ``out`` are mutually exclusive.
 
