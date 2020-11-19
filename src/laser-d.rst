@@ -16,7 +16,6 @@ Here is a hello world program in Laser-D.
         printf("Hello World!\n");
     }
 
-
 Notation
 ========
 The syntax is specified using Extended Backus-Naur Form (EBNF)::
@@ -55,7 +54,7 @@ Each laser-D module contains one or more declarations of entities.
 
 An entity is a named variable, function, structure or union type, enumeration type, template, mixin template or an external symbol.
 
-Entities in a Laser-D module can have linkage that specifies how these entities may be accessed from other Laser-D modules, or from programs in other 
+Entities in a Laser-D module can have linkage specification that defined how these entities may be accessed from other Laser-D modules, or from programs in other 
 other languages such as C or C++.
 
 Source Code Representation
@@ -93,26 +92,35 @@ The language has following keywords.
 
 ::
 
-    abstract    alias        align          asm          assert      auto
-    body        bool         break          byte         case        cast
-    catch       cdouble      cent           cfloat       char        class
-    const       continue     creal          dchar        debug       default
-    delegate    delete       deprecated     do           double
-    else        enum         export         extern       false       final
-    finally     float        for            foreach      foreach_reverse    function
-    goto        idouble      if             ifloat       immutable    import
-    in          inout        int            interface    invariant    ireal
-    is          lazy         long           macro        mixin        module
-    new         nothrow      null           out          override     package
-    pragma      private      protected      public       pure 
-    real        ref          return         scope        shared       short
-    static      struct       super          switch       synchronized
-    template    this         throw          true         try          typeid
-    typeof      ubyte        ucent          uint         ulong        union
-    unittest    ushort       version        void         wchar        while
-    with        __FILE__     __FILE_FULL_PATH__          __MODULE__   __LINE__
-    __FUNCTION__             __PRETTY_FUNCTION__         __gshared    __traits     
-    __vector    __parameters
+    alias         align        assert        auto         bool         
+    break         byte         case          cast         cdouble      
+    cfloat        char         const         continue     creal          
+    dchar         debug        default       delegate     do           
+    double        else         enum          export       extern       
+    false         float        for           foreach      foreach_reverse    
+    function      goto         idouble       if           ifloat 
+    immutable     import       in            inout        int            
+    interface     ireal        is            long         mixin        
+    module        null         out           pragma       real
+    ref           return       scope         shared       short
+    static        struct       super         switch       template    
+    this          true         typeof        ubyte        uint         
+    ulong         union        unittest      ushort       version        
+    void          wchar        while
+    __FILE__                   __FILE_FULL_PATH__         __MODULE__   __LINE__
+    __FUNCTION__               __PRETTY_FUNCTION__        __gshared    __traits     
+    __parameters
+
+The following are reserved words for compatibility with D, however these are not keywords in Laser-D.
+
+::
+
+    abstract      asm          body           catch       cent         class
+    debug         delete       deprecated     final       interface    invariant
+    lazy          mixin        new            nothrow     override     package
+    private       protected    public         pragma      pure         super  
+    synchronized  throw        try            typeid      ucent        with
+    __vector
 
 
 Operators and Punctuation
@@ -182,6 +190,9 @@ called its scope. There are following kinds of scopes: global, module, struct or
 
 Different entities designated by the same identifier either have different scopes, or the identifiers must be in an overload set.
 
+Declarations
+------------
+All names must be declared prior to use, or imported from another module.
 
 Modules
 =======
@@ -214,9 +225,8 @@ A type determines a set of values together with operations and methods specific 
                    "int" | "uint" | "long" | "ulong" | "char" | "wchar" | 
                    "dchar" | "float" | "double" | "real" | "ifloat" | 
                    "idouble" | "ireal" | "cfloat" | "cdouble" | "creal" .
-    DerivedType  = ArrayType | StructType | PointerType | ReferenceType | FunctionType | 
-                   UnionType | DelegateType | FunctionPointerType .
-
+    DerivedType  = ArrayType | StructType | PointerType | ReferenceType | 
+                   UnionType .
 
 Void type
 ---------
@@ -237,8 +247,6 @@ Boolean types
     bool        false	                    boolean value
 
 The ``bool`` type is a byte-size type that can only hold the value ``true`` or ``false``.
-
-The operators that can accept operands of type ``bool`` are: ``& |``, ``^``, ``&=``, ``|=``, ``^=``, ``!``, ``&&``, ``||``, and ``?:``.
 
 
 Integral types
@@ -360,8 +368,7 @@ Function types
 --------------
 ::
 
-    FunctionType         = FunctionSignature ";" .
-    FunctionSignature    = ( Result | auto ) "function" "(" Parameters ")" .
+    FunctionType         = ( Result | auto ) "function" "(" Parameters ")" .
     Result               = Type .
     Parameters           = [ ParameterList ] .
     ParameterList        = ParameterDecl { "," ParameterDecl } .
@@ -382,6 +389,7 @@ Parameter Attributes
 
 The attributes ``in``, ``ref`` and ``out`` are mutually exclusive.
 
+
 Struct types
 ------------
 A struct declaration introduces the struct name as a type into the scope where it is declared and hides any struct, 
@@ -395,7 +403,7 @@ variable, function, or other declaration of that name in an enclosing scope.
     DataMember    = Type identifier [ "=" Initializer ] ";" .
     Constructor   = "this" "(" Parameters ")" FunctionBody .
     Destructor    = "~" "this" "(" ")" FunctionBody .
-    Method        = FunctionSignature FunctionBody .
+    Method        = ( Result | auto ) identifier "(" Parameters ")" FunctionBody .
     StaticMethod  = "static" Method .
 
 The data members of a struct are allocated so that later members have higher addresses within a struct object. 
@@ -442,7 +450,7 @@ DelegateType
 
     DelegateType  = Result "delegate" "(" Parameters ")" .
 
-The delegate type a pointer to a struct method. It enacpsulates both a reference to the struct object and the method. 
+The delegate type holds a pointer to a struct method. It enacpsulates both a reference to the struct object and the method. 
 
     
 Union types
